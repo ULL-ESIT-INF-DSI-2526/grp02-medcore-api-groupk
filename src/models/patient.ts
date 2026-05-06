@@ -48,8 +48,8 @@ const PatientSchema = new Schema<PatientDocumentationInterface>({
         trim: true
     },
     contactData: {
-        address: { type: String, required: [true, "La dirección es obñigatoria"], trim: true },
-        phoheNumber: { type: String, required: [true, "El número de teléfono es obligatorio"], trim: true },
+        address: { type: String, required: [true, "La dirección es obligatoria"], trim: true },
+        phoneNumber: { type: String, required: [true, "El número de teléfono es obligatorio"], trim: true },
         email: {
             type: String,
             required: [true, "El email es obligatorio"],
