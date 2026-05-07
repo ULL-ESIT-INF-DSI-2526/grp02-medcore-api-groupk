@@ -17,10 +17,13 @@ interface PatientDocumentationInterface extends Document {
     };
     allergies: string[];
     bloodType: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "0+" | "0-";
-    status: "activo" | "baja temporal" | "fallecido";
+    status: "activo" | "baja temporal" | "fallecido" | "inactivo"; // "inactivo" se usará cuando se "borre" un paciente del sistema
 }
 
-const PatientSchema = new Schema<PatientDocumentationInterface>({
+/**
+ * Esquema para los pacientes
+ */
+ export const PatientSchema = new Schema<PatientDocumentationInterface>({
     fullName: {
         type: String,
         required: [true, "El nombre completo es obligatorio"],
@@ -76,7 +79,7 @@ const PatientSchema = new Schema<PatientDocumentationInterface>({
         type: String,
         required: [true, "El estado del paciente es obligatorio"],
         default: "activo",
-        enum: ["activo", "baja temporal", "fallecido"]
+        enum: ["activo", "baja temporal", "fallecido", "inactivo"]
     },
 });
 

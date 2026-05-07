@@ -18,6 +18,9 @@ interface MedicationDocumentationInterface extends Document {
   negativeIndications: string[]; 
 }
 
+/**
+ * Esquema para los medicamentos
+ */
 const MedicationSchema = new Schema<MedicationDocumentationInterface>({ 
   comercialName: {
     type: String,
@@ -79,4 +82,7 @@ const MedicationSchema = new Schema<MedicationDocumentationInterface>({
   }
 });
 
-export const MedicationModel = model<MedicationDocumentationInterface>("Medication", MedicationSchema);
+/**
+ * Se invoca a model que tiene como argumentos el nombre del modelo y el esquema de los medicamentos.
+ */
+export const Medication = model<MedicationDocumentationInterface>("Medication", MedicationSchema);

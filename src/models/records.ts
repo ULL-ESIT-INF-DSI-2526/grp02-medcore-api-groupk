@@ -1,4 +1,5 @@
 import { Document, model, Schema } from "mongoose";
+import validator from "validator";
 
 /**
  * Interfaz auxiliar para los medicamentos prescritos dentro de un registro
@@ -25,6 +26,9 @@ export interface RecordDocumentInterface extends Document {
     status: "abierto" | "cerrado";
 }
 
+/**
+ * Esquema para los registros
+ */
 const RecordSchema = new Schema<RecordDocumentInterface>({
     // Referencia al modelo Patient
     patient: {
@@ -93,4 +97,7 @@ const RecordSchema = new Schema<RecordDocumentInterface>({
     }
 });
 
+/**
+ * Se invoca a model que tiene como argumentos el nombre del modelo y el esquema de los registros.
+ */
 export const Record = model<RecordDocumentInterface>("Record", RecordSchema);

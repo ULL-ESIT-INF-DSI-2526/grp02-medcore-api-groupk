@@ -20,6 +20,9 @@ interface StaffDocumentationInterface extends Document {
     status: "activo" | "inactivo";
 }
 
+/**
+ * Esquema para el personal médico
+ */
 const StaffSchema = new Schema<StaffDocumentationInterface>({
     fullName: {
         type: String,
