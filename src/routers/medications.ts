@@ -116,7 +116,7 @@ medicationRouter.patch("/medications", async (req, res) => {
 
 });
 
-medicationRouter.get("/medications/:id", async (req, res) => {
+medicationRouter.patch("/medications/:id", async (req, res) => {
     
     const allowedUpdates = [
         "comercialName",

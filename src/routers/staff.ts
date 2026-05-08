@@ -4,9 +4,32 @@ import { Staff } from '../models/staff.js';
 export const staffRouter = express.Router();
 
 staffRouter.post("/staff", async (req, res) => {
-    const staff = new Staff(req.body);
 
     try {
+            // Buscar staff existente por DNI
+            const existingStaff = await Staff.findOne({
+                idNumber: req.body.idNumber
+            });
+    
+            // Si existe y está inactivo → reactivar
+            if (existingStaff && existingStaff.status === "inactivo") {
+    
+                existingStaff.status = "activo";
+    
+                await existingStaff.save();
+    
+                return res.status(200).send(existingStaff);
+            }
+    
+            // Si existe y NO está inactivo → error
+            if (existingStaff) {
+                return res.status(409).send({
+                    error: "El personal médico ya existe"
+                });
+            }
+
+        const staff = new Staff(req.body);
+
         await staff.save();
         res.status(201).send(staff);
     }catch (error) {
@@ -70,7 +93,9 @@ staffRouter.patch("/staff", async (req, res) => {
         "shift",
         "assignedArea",
         "yearsOfExperience",
-        "contactData",
+        "contactData.address",
+        "contactData.phoneNumber",
+        "contactData.email",
         "status"
     ];
     const actualUpdates = Object.keys(req.body);
@@ -110,7 +135,7 @@ staffRouter.patch("/staff", async (req, res) => {
 
 });
 
-staffRouter.get("/staff/:id", async (req, res) => {
+staffRouter.patch("/staff/:id", async (req, res) => {
     
     const allowedUpdates = [
         "fullName",
@@ -120,7 +145,9 @@ staffRouter.get("/staff/:id", async (req, res) => {
         "shift",
         "assignedArea",
         "yearsOfExperience",
-        "contactData",
+        "contactData.address",
+        "contactData.phoneNumber",
+        "contactData.email",
         "status"
     ];
     const actualUpdates = Object.keys(req.body);
@@ -174,7 +201,7 @@ staffRouter.delete("/staff", async (req, res) => {
         const staff = await Staff.findByIdAndUpdate(
         filter,
         {
-            status: "inactive"
+            status: "inactivo"
         },
         {
             returnDocument: "after",
@@ -201,7 +228,7 @@ staffRouter.delete("/staff/:id", async (req, res) => {
         const staff = await Staff.findByIdAndUpdate(
         req.params.id,
         {
-            status: "inactive"
+            status: "inactivo"
         },
         {
             returnDocument: "after",

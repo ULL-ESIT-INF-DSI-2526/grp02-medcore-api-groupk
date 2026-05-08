@@ -52,7 +52,7 @@ interface PatientDocumentationInterface extends Document {
     },
     contactData: {
         address: { type: String, required: [true, "La dirección es obligatoria"], trim: true },
-        phoneNumber: { type: String, required: [true, "El número de teléfono es obligatorio"], trim: true },
+        phoneNumber: { type: String, required: [true, "El número de teléfono es obligatorio"], unique: true, trim: true },
         email: {
             type: String,
             required: [true, "El email es obligatorio"],
