@@ -198,7 +198,7 @@ staffRouter.delete("/staff", async (req, res) => {
     if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
 
     try {
-        const staff = await Staff.findByIdAndUpdate(
+        const staff = await Staff.findOneAndUpdate(
         filter,
         {
             status: "inactivo"

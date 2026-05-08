@@ -197,7 +197,7 @@ patientRouter.delete("/patients", async (req, res) => {
     if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
 
     try {
-        const patient = await Patient.findByIdAndUpdate(
+        const patient = await Patient.findOneAndUpdate(
         filter,
         {
             status: "inactivo"
