@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express';
 import { Medication } from '../models/medications.js';
 import { Record } from '../models/records.js';
@@ -12,13 +13,13 @@ medicationRouter.post("/medications", async (req, res) => {
         await medication.save();
         res.status(201).send(medication);
     }catch (error) {
-        res.status(400).send(error);
+        return res.status(400).send(error);
     }
 });
 
 medicationRouter.get("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
-        res.status(400).send({
+         return res.status(400).send({
             error: "Se tiene que dar el nombre comercial, principio activo o código nacional"
         });
     }
@@ -35,7 +36,7 @@ medicationRouter.get("/medications", async (req, res) => {
         if (medication.length !== 0) {
             res.status(200).send(medication);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         }
@@ -48,7 +49,7 @@ medicationRouter.get("/medications/:id", async (req, res) => {
     try {
         const medication = await Medication.findById(req.params.id);
         if (!medication) {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         }
@@ -60,7 +61,7 @@ medicationRouter.get("/medications/:id", async (req, res) => {
 
 medicationRouter.patch("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre comercial, principio activo o código nacional"
         });
     }
@@ -82,7 +83,7 @@ medicationRouter.patch("/medications", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -106,7 +107,7 @@ medicationRouter.patch("/medications", async (req, res) => {
         if (medication) {
             res.status(200).send(medication);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         }
@@ -135,7 +136,7 @@ medicationRouter.patch("/medications/:id", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -153,7 +154,7 @@ medicationRouter.patch("/medications/:id", async (req, res) => {
         if (medication) {
             res.status(200).send(medication);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         }
@@ -168,7 +169,7 @@ medicationRouter.patch("/medications/:id", async (req, res) => {
  */
 medicationRouter.delete("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre comercial, principio activo o código nacional"
         });
     }
@@ -183,7 +184,7 @@ medicationRouter.delete("/medications", async (req, res) => {
         const medication = await Medication.findOne(filter);
         
         if (!medication) {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         } else {
@@ -193,7 +194,7 @@ medicationRouter.delete("/medications", async (req, res) => {
             } as any);
 
             if (recordExists) {
-                res.status(409).send({
+                return res.status(409).send({
                     error: "No se puede borrar el medicamento porque está asociado a registros médicos"
                 });
             }
@@ -215,7 +216,7 @@ medicationRouter.delete("/medications/:id", async (req, res) => {
         } as any);
 
         if (recordExists) {
-            res.status(409).send({
+            return res.status(409).send({
             error: "No se puede borrar el medicamento porque está asociado a registros médicos"
         });
         }
@@ -225,7 +226,7 @@ medicationRouter.delete("/medications/:id", async (req, res) => {
         if (medication) {
             res.status(200).send(medication);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el medicamento"
             });
         }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express';
 import { Staff } from '../models/staff.js';
 
@@ -8,7 +9,7 @@ staffRouter.post("/staff", async (req, res) => {
     try {
             // Buscar staff existente por DNI
             const existingStaff = await Staff.findOne({
-                idNumber: req.body.idNumber
+                licenseNumber: req.body.licenseNumber
             });
     
             // Si existe y está inactivo → reactivar
@@ -33,13 +34,13 @@ staffRouter.post("/staff", async (req, res) => {
         await staff.save();
         res.status(201).send(staff);
     }catch (error) {
-        res.status(400).send(error);
+        return res.status(400).send(error);
     }
 });
 
 staffRouter.get("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del personal médico o su especialidad"
         });
     }
@@ -55,7 +56,7 @@ staffRouter.get("/staff", async (req, res) => {
         if (staff.length !== 0) {
             res.status(200).send(staff);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }
@@ -68,7 +69,7 @@ staffRouter.get("/staff/:id", async (req, res) => {
     try {
         const staff = await Staff.findById(req.params.id);
         if (!staff) {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }
@@ -80,7 +81,7 @@ staffRouter.get("/staff/:id", async (req, res) => {
 
 staffRouter.patch("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del personal médico o su especialidad"
         });
     }
@@ -102,7 +103,7 @@ staffRouter.patch("/staff", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -110,7 +111,7 @@ staffRouter.patch("/staff", async (req, res) => {
     const filter: any = {};
 
     if (req.query.fullName) filter.fullName = req.query.fullName.toString();
-    if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
+    if (req.query.licenseNumber) filter.licenseNumber = req.query.licenseNumber.toString();
 
     try {
         const staff = await Staff.findOneAndUpdate(
@@ -125,7 +126,7 @@ staffRouter.patch("/staff", async (req, res) => {
         if (staff) {
             res.status(200).send(staff);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }
@@ -154,7 +155,7 @@ staffRouter.patch("/staff/:id", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -172,7 +173,7 @@ staffRouter.patch("/staff/:id", async (req, res) => {
         if (staff) {
             res.status(200).send(staff);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }
@@ -187,7 +188,7 @@ staffRouter.patch("/staff/:id", async (req, res) => {
  */
 staffRouter.delete("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del personal médico o su especialidad"
         });
     }
@@ -195,7 +196,7 @@ staffRouter.delete("/staff", async (req, res) => {
     const filter: any = {};
 
     if (req.query.fullName) filter.fullName = req.query.fullName.toString();
-    if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
+    if (req.query.licenseNumber) filter.licenseNumber = req.query.licenseNumber.toString();
 
     try {
         const staff = await Staff.findOneAndUpdate(
@@ -212,7 +213,7 @@ staffRouter.delete("/staff", async (req, res) => {
         if (staff) {
             res.status(200).send(staff);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }
@@ -239,7 +240,7 @@ staffRouter.delete("/staff/:id", async (req, res) => {
         if (staff) {
             res.status(200).send(staff);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el personal médico"
             });
         }

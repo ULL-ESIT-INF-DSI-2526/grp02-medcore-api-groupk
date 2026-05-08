@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express';
 import { Patient } from '../models/patient.js';
 
@@ -5,44 +6,19 @@ import { Patient } from '../models/patient.js';
 export const patientRouter = express.Router();
 
 patientRouter.post("/patients", async (req, res) => {
+    const patient = new Patient(req.body);
 
     try {
-        // Buscar paciente existente por DNI
-        const existingPatient = await Patient.findOne({
-            idNumber: req.body.idNumber
-        });
-
-        // Si existe y está inactivo → reactivar
-        if (existingPatient && existingPatient.status === "inactivo") {
-
-            existingPatient.status = "activo";
-
-            await existingPatient.save();
-
-            return res.status(200).send(existingPatient);
-        }
-
-        // Si existe y NO está inactivo → error
-        if (existingPatient) {
-            return res.status(409).send({
-                error: "El paciente ya existe"
-            });
-        }
-
-        // Crea nuevo paciente
-        const patient = new Patient(req.body);
-
         await patient.save();
         res.status(201).send(patient);
-        
-    } catch (error) {
-        res.status(400).send(error);
+    }catch (error) {
+        return res.status(400).send(error);
     }
 });
 
 patientRouter.get("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del paciente o su número de identificación"
         });
     }
@@ -58,7 +34,7 @@ patientRouter.get("/patients", async (req, res) => {
         if (patient.length !== 0) {
             res.status(200).send(patient);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
@@ -71,7 +47,7 @@ patientRouter.get("/patients/:id", async (req, res) => {
     try {
         const patient = await Patient.findById(req.params.id);
         if (!patient) {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
@@ -83,7 +59,7 @@ patientRouter.get("/patients/:id", async (req, res) => {
 
 patientRouter.patch("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del paciente o su número de identificación"
         });
     }
@@ -92,9 +68,7 @@ patientRouter.patch("/patients", async (req, res) => {
         "fullName",
         "birthDate",
         "gender",
-        "contactData.address",
-        "contactData.phoneNumber",
-        "contactData.email",
+        "contact",
         "allergies",
         "bloodType",
         "status"
@@ -103,7 +77,7 @@ patientRouter.patch("/patients", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -126,7 +100,7 @@ patientRouter.patch("/patients", async (req, res) => {
         if (patient) {
             res.status(200).send(patient);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
@@ -142,9 +116,7 @@ patientRouter.patch("/patients/:id", async (req, res) => {
         "fullName",
         "birthDate",
         "gender",
-        "contactData.address",
-        "contactData.phoneNumber",
-        "contactData.email",
+        "contact",
         "allergies",
         "bloodType",
         "status"
@@ -153,7 +125,7 @@ patientRouter.patch("/patients/:id", async (req, res) => {
     const isValidUpdate = actualUpdates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidUpdate) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Actualización no permitida"
         });
     }
@@ -171,7 +143,7 @@ patientRouter.patch("/patients/:id", async (req, res) => {
         if (patient) {
             res.status(200).send(patient);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
@@ -186,7 +158,7 @@ patientRouter.patch("/patients/:id", async (req, res) => {
  */
 patientRouter.delete("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
-        res.status(400).send({
+        return res.status(400).send({
             error: "Se tiene que dar el nombre del paciente o su número de identificación"
         });
     }
@@ -197,10 +169,10 @@ patientRouter.delete("/patients", async (req, res) => {
     if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
 
     try {
-        const patient = await Patient.findOneAndUpdate(
+        const patient = await Patient.findByIdAndUpdate(
         filter,
         {
-            status: "inactivo"
+            status: "inactive"
         },
         {
             returnDocument: "after",
@@ -211,7 +183,7 @@ patientRouter.delete("/patients", async (req, res) => {
         if (patient) {
             res.status(200).send(patient);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
@@ -227,7 +199,7 @@ patientRouter.delete("/patients/:id", async (req, res) => {
         const patient = await Patient.findByIdAndUpdate(
         req.params.id,
         {
-            status: "inactivo"
+            status: "inactive"
         },
         {
             returnDocument: "after",
@@ -238,7 +210,7 @@ patientRouter.delete("/patients/:id", async (req, res) => {
         if (patient) {
             res.status(200).send(patient);
         } else {
-            res.status(404).send({
+            return res.status(404).send({
                 error: "No se encuentra el paciente"
             });
         }
