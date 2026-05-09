@@ -23,11 +23,11 @@ sudo /home/usuario/mongodb/bin/mongod --dbpath /home/usuario/mongodb-data/
     npm run build
     ```
     * A continuación iniciamos el servidor con el comando:
-        * Pone la base de datos guardada en la variable **dev.env**:
         ```
-        npm run dev
+        npm start
         ```
-        
+        Pone la base de datos guardada en la variable **dev.env** que es la que guarda la base de datos que estamos usando.
+
         De esta forma ya tendrás la aplicación ejecutando y puedes trabajar con Postman para mandarle solicitudes.
 
 ## ***Test:***
