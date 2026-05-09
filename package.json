@@ -8,8 +8,8 @@
     "start": "node dist/index.js",
     "dev": "tsc-watch --onSuccess \"env-cmd -f ./config/dev.env node dist/index.js\"",
     "doc": "typedoc",
-    "test": "env-cmd -f ./config/test.env vitest run",
-    "coverage": "env-cmd -f ./config/test.env vitest run --coverage --coverage.include \"src/**/*.ts\""
+    "test": "env-cmd -f ./config/test.env vitest run --no-file-parallelism",
+    "coverage": "env-cmd -f ./config/test.env vitest run --coverage --no-file-parallelism --coverage.include \"src/**/*.ts\" --coverage.exclude=src/index.ts"
   },
   "keywords": [],
   "author": "",

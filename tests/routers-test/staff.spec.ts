@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from "vitest";
 import request from "supertest";
-import { app } from "../src/app.js";
-import { Staff } from "../src/models/staff.js";
+import { app } from "../../src/app.js";
+import { Staff } from "../../src/models/staff.js";
 
 /**
  * Staff base para pruebas

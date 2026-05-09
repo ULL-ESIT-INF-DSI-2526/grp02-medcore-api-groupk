@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from "vitest";
 import request from "supertest";
-import { app } from "../src/app.js";
-import { Patient } from "../src/models/patient.js";
+import { app } from "../../src/app.js";
+import { Patient } from "../../src/models/patient.js";
 
 /**
  * Paciente base para pruebas

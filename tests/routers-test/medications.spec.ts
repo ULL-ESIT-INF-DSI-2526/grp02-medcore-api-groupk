@@ -1,8 +1,8 @@
 import { describe, test, expect, beforeEach } from "vitest";
 import request from "supertest";
-import { app } from "../src/app.js";
-import { Medication } from "../src/models/medications.js";
-import { Record } from "../src/models/records.js";
+import { app } from "../../src/app.js";
+import { Medication } from "../../src/models/medications.js";
+import { Record } from "../../src/models/records.js";
 
 /**
  * Medicamento base para pruebas
