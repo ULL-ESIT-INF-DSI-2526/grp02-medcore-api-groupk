@@ -143,17 +143,12 @@ recordsRouter.post("/records", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error500'
  */
-recordsRouter.get("/records", async (req, res, next) => {
-    
-    // Si no viene patientIdNumber, pasar al siguiente GET
-    if (!req.query.patientIdNumber) {
-        return next();
-    }
+recordsRouter.get("/records/patient/:idNumber", async (req, res) => {
 
     try {
 
         const patient = await Patient.findOne({
-            idNumber: req.query.patientIdNumber.toString()
+            idNumber: req.params.idNumber
         });
 
         if (!patient) {
@@ -169,7 +164,10 @@ recordsRouter.get("/records", async (req, res, next) => {
         return res.status(200).send(records);
 
     } catch (error) {
-        return res.status(500).send({ error: "Error interno del servidor", details: error });
+        return res.status(500).send({
+            error: "Error interno del servidor",
+            details: error
+        });
     }
 });
 
