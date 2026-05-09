@@ -111,7 +111,7 @@ recordsRouter.post("/records", async (req, res) => {
 
 /**
  * @swagger
- * /records:
+ * /records/patient/{idNumber}:
  *   get:
  *     summary: Obtener registros por DNI del paciente
  *     tags:
