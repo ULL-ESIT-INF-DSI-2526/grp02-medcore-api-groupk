@@ -121,7 +121,7 @@ describe("GET /medications/:id", () => {
 
 });
 
-describe("PATCH /medications (por query)", () => {
+describe("PATCH /medications", () => {
 
     test("Actualiza medicamento correctamente por nationalCode", async () => {
         const response = await request(app)
