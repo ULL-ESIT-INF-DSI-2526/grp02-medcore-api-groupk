@@ -31,7 +31,7 @@ export const medicationRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error400'
  */
 medicationRouter.post("/medications", async (req, res) => {
     const medication = new Medication(req.body);
@@ -78,13 +78,19 @@ medicationRouter.post("/medications", async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error400'
  *       404:
  *         description: No se encuentra el medicamento
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.get("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
@@ -139,7 +145,13 @@ medicationRouter.get("/medications", async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.get("/medications/:id", async (req, res) => {
     try {
@@ -189,9 +201,23 @@ medicationRouter.get("/medications/:id", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Medication'
  *       400:
- *         description: Actualización no permitida
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.patch("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
@@ -278,9 +304,23 @@ medicationRouter.patch("/medications", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Medication'
  *       400:
- *         description: Actualización no permitida
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.patch("/medications/:id", async (req, res) => {
     
@@ -361,13 +401,23 @@ medicationRouter.patch("/medications/:id", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Medication'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
  *       409:
  *         description: No se puede eliminar (usado en records)
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error409'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.delete("/medications", async (req, res) => {
     if (!req.query.comercialName && !req.query.activePrinciple && !req.query.nationalCode) {
@@ -436,9 +486,23 @@ medicationRouter.delete("/medications", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Medication'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
  *       409:
  *         description: No se puede eliminar (usado en records)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error409'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 medicationRouter.delete("/medications/:id", async (req, res) => {
     

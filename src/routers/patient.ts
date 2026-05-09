@@ -36,7 +36,7 @@ export const patientRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error409'
  */
 patientRouter.post("/patients", async (req, res) => {
 
@@ -99,9 +99,23 @@ patientRouter.post("/patients", async (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Patient'
  *       400:
- *         description: Faltan parámetros
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.get("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
@@ -151,7 +165,17 @@ patientRouter.get("/patients", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Patient'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.get("/patients/:id", async (req, res) => {
     try {
@@ -197,9 +221,23 @@ patientRouter.get("/patients/:id", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Patient'
  *       400:
- *         description: Actualización no permitida
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.patch("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
@@ -278,8 +316,28 @@ patientRouter.patch("/patients", async (req, res) => {
  *     responses:
  *       200:
  *         description: Paciente actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       400:
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.patch("/patients/:id", async (req, res) => {
     
@@ -353,8 +411,24 @@ patientRouter.patch("/patients/:id", async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Patient'
+ *       400:
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.delete("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
@@ -414,8 +488,22 @@ patientRouter.delete("/patients", async (req, res) => {
  *     responses:
  *       200:
  *         description: Paciente desactivado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 patientRouter.delete("/patients/:id", async (req, res) => {
     

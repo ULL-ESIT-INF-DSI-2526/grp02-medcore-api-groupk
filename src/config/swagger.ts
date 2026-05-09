@@ -636,10 +636,45 @@ export const options: Options = {
           }
         },
 
-        ErrorResponse: {
+        Error400: {
           type: "object",
           properties: {
-            error: { type: "string", example: "Error message" }
+            error: { type: "string", example: "Solicitud incorrecta" }
+          }
+        },
+
+        Error401: {
+          type: "object",
+          properties: {
+            error: { type: "string", example: "No autorizado" }
+          }
+        },
+
+        Error403: {
+          type: "object",
+          properties: {
+            error: { type: "string", example: "Acceso prohibido" }
+          }
+        },
+
+        Error404: {
+          type: "object",
+          properties: {
+            error: { type: "string", example: "Recurso no encontrado" }
+          }
+        },
+
+        Error409: {
+          type: "object",
+          properties: {
+            error: { type: "string", example: "Conflicto: el recurso ya existe" }
+          }
+        },
+
+        Error500: {
+          type: "object",
+          properties: {
+            error: { type: "string", example: "Error interno del servidor" }
           }
         }
       }

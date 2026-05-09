@@ -30,6 +30,12 @@ export const staffRouter = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Staff'
+ *       400:
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       409:
  *         description: Ya existe el personal médico
  *         content:
@@ -97,9 +103,23 @@ staffRouter.post("/staff", async (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Staff'
  *       400:
- *         description: Faltan parámetros
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.get("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
@@ -149,7 +169,17 @@ staffRouter.get("/staff", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Staff'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.get("/staff/:id", async (req, res) => {
     try {
@@ -195,9 +225,23 @@ staffRouter.get("/staff/:id", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Staff'
  *       400:
- *         description: Actualización no permitida
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.patch("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
@@ -278,8 +322,28 @@ staffRouter.patch("/staff", async (req, res) => {
  *     responses:
  *       200:
  *         description: Personal médico actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       400:
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.patch("/staff/:id", async (req, res) => {
     
@@ -350,13 +414,29 @@ staffRouter.patch("/staff/:id", async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Personal médico desactivado
+ *         description: Personal médico actualizado
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Staff'
+ *       400:
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.delete("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
@@ -415,9 +495,23 @@ staffRouter.delete("/staff", async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Personal médico desactivado
+ *         description: Personal médico actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 staffRouter.delete("/staff/:id", async (req, res) => {
     

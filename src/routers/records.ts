@@ -30,9 +30,23 @@ export const recordsRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Record'
  *       404:
- *         description: Paciente o staff no encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
  *       409:
- *         description: Error de validación (stock, staff inactivo, etc.)
+ *         description: Conflicto con el estado actual del recurso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error409'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.post("/records", async (req, res) => {
     try {
@@ -117,7 +131,17 @@ recordsRouter.post("/records", async (req, res) => {
  *               items:
  *                 $ref: '#/components/schemas/Record'
  *       404:
- *         description: Paciente no encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.get("/records", async (req, res, next) => {
     
@@ -183,7 +207,17 @@ recordsRouter.get("/records", async (req, res, next) => {
  *               items:
  *                 $ref: '#/components/schemas/Record'
  *       400:
- *         description: Faltan parámetros
+ *         description: Faltan parámetros de búsqueda
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error400'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.get("/records", async (req, res) => {
     try {
@@ -235,7 +269,17 @@ recordsRouter.get("/records", async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Record'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.get("/records/:id", async (req, res) => {
     try {
@@ -275,11 +319,31 @@ recordsRouter.get("/records/:id", async (req, res) => {
  *             $ref: '#/components/schemas/RecordUpdate'
  *     responses:
  *       200:
- *         description: Registro actualizado
+ *         description: Registros filtrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Record'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
  *       409:
- *         description: Error de validación de medicamentos
+ *         description: Conflicto con el estado actual del recurso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error409'
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.patch("/records/:id", async (req, res) => {
     try {
@@ -342,11 +406,25 @@ recordsRouter.patch("/records/:id", async (req, res) => {
  *           type: string
  *     responses:
  *       200:
- *         description: Registro eliminado correctamente
+ *         description: Registros filtrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Record'
  *       404:
- *         description: No encontrado
+ *         description: No se encuentra el medicamento
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error404'
  *       500:
- *         description: Error interno
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error500'
  */
 recordsRouter.delete("/records/:id", async (req, res) => {
     try {
