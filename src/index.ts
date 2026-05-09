@@ -6,6 +6,11 @@ import { staffRouter } from './routers/staff.js';
 import { medicationRouter } from './routers/medications.js';
 import { recordsRouter } from "./routers/records.js";
 
+/**
+ * Punto de entrada del servidor Express.
+ * Inicializa la aplicación, conecta la base de datos, registra los routers
+ * y levanta el servidor en el puerto configurado.
+ */
 const app = express();
 app.use(express.json());
 app.use(patientRouter);

@@ -10,6 +10,31 @@ import { Types } from 'mongoose';
 
 export const recordsRouter = express.Router();
 
+/**
+ * @swagger
+ * /records:
+ *   post:
+ *     summary: Crear registro médico
+ *     tags:
+ *       - Records
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RecordCreate'
+ *     responses:
+ *       201:
+ *         description: Registro creado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Record'
+ *       404:
+ *         description: Paciente o staff no encontrado
+ *       409:
+ *         description: Error de validación (stock, staff inactivo, etc.)
+ */
 recordsRouter.post("/records", async (req, res) => {
     try {
         const {
@@ -71,7 +96,30 @@ recordsRouter.post("/records", async (req, res) => {
     }
 });
 
-// Leer por Query String (DNI del paciente )
+/**
+ * @swagger
+ * /records:
+ *   get:
+ *     summary: Obtener registros por DNI del paciente
+ *     tags:
+ *       - Records
+ *     parameters:
+ *       - in: query
+ *         name: patientIdNumber
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de registros del paciente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Record'
+ *       404:
+ *         description: Paciente no encontrado
+ */
 recordsRouter.get("/records", async (req, res, next) => {
     
     // Si no viene patientIdNumber, pasar al siguiente GET
@@ -102,7 +150,42 @@ recordsRouter.get("/records", async (req, res, next) => {
     }
 });
 
-// Leer por Query String (Rango de Fechas)
+/**
+ * @swagger
+ * /records:
+ *   get:
+ *     summary: Obtener registros por rango de fechas
+ *     tags:
+ *       - Records
+ *     parameters:
+ *       - in: query
+ *         name: startDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: endDate
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: recordType
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Registros filtrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Record'
+ *       400:
+ *         description: Faltan parámetros
+ */
 recordsRouter.get("/records", async (req, res) => {
     try {
         // Opción B: Búsqueda por rango de fechas
@@ -132,7 +215,29 @@ recordsRouter.get("/records", async (req, res) => {
     }
 });
 
-// Leer por ID dinámico
+/**
+ * @swagger
+ * /records/{id}:
+ *   get:
+ *     summary: Obtener registro por ID
+ *     tags:
+ *       - Records
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Registro encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Record'
+ *       404:
+ *         description: No encontrado
+ */
 recordsRouter.get("/records/:id", async (req, res) => {
     try {
         const record = await Record.findById(req.params.id)
@@ -150,7 +255,33 @@ recordsRouter.get("/records/:id", async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /records/{id}:
+ *   patch:
+ *     summary: Actualizar registro médico
+ *     tags:
+ *       - Records
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RecordUpdate'
+ *     responses:
+ *       200:
+ *         description: Registro actualizado
+ *       404:
+ *         description: No encontrado
+ *       409:
+ *         description: Error de validación de medicamentos
+ */
 recordsRouter.patch("/records/:id", async (req, res) => {
     try {
         const record = await Record.findById(req.params.id);
@@ -197,7 +328,27 @@ recordsRouter.patch("/records/:id", async (req, res) => {
     }
 });
 
-
+/**
+ * @swagger
+ * /records/{id}:
+ *   delete:
+ *     summary: Eliminar registro médico y restaurar stock
+ *     tags:
+ *       - Records
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Registro eliminado correctamente
+ *       404:
+ *         description: No encontrado
+ *       500:
+ *         description: Error interno
+ */
 recordsRouter.delete("/records/:id", async (req, res) => {
     try {
         const record = await Record.findById(req.params.id);

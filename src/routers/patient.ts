@@ -5,6 +5,39 @@ import { Patient } from '../models/patient.js';
 
 export const patientRouter = express.Router();
 
+/**
+ * @swagger
+ * /patients:
+ *   post:
+ *     summary: Crear o reactivar paciente
+ *     tags:
+ *       - Patients
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PatientCreate'
+ *     responses:
+ *       201:
+ *         description: Paciente creado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       200:
+ *         description: Paciente reactivado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       409:
+ *         description: Paciente ya existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 patientRouter.post("/patients", async (req, res) => {
 
     try {
@@ -40,6 +73,36 @@ patientRouter.post("/patients", async (req, res) => {
     } 
 });
 
+/**
+ * @swagger
+ * /patients:
+ *   get:
+ *     summary: Buscar pacientes por nombre o DNI
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: idNumber
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de pacientes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Patient'
+ *       400:
+ *         description: Faltan parámetros
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.get("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
         return res.status(400).send({
@@ -67,6 +130,29 @@ patientRouter.get("/patients", async (req, res) => {
     } 
 });
 
+/**
+ * @swagger
+ * /patients/{id}:
+ *   get:
+ *     summary: Obtener paciente por ID
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Paciente encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.get("/patients/:id", async (req, res) => {
     try {
         const patient = await Patient.findById(req.params.id);
@@ -81,6 +167,40 @@ patientRouter.get("/patients/:id", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /patients:
+ *   patch:
+ *     summary: Actualizar paciente por filtros
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: idNumber
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PatientUpdate'
+ *     responses:
+ *       200:
+ *         description: Paciente actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       400:
+ *         description: Actualización no permitida
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.patch("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
         return res.status(400).send({
@@ -136,6 +256,31 @@ patientRouter.patch("/patients", async (req, res) => {
 
 });
 
+/**
+ * @swagger
+ * /patients/{id}:
+ *   patch:
+ *     summary: Actualizar paciente por ID
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PatientUpdate'
+ *     responses:
+ *       200:
+ *         description: Paciente actualizado
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.patch("/patients/:id", async (req, res) => {
     
     const allowedUpdates = [
@@ -184,6 +329,33 @@ patientRouter.patch("/patients/:id", async (req, res) => {
  * A la hora de borrar pacientes, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
  * De esta menera se preserva la integridad de los registros.
  */
+
+/**
+ * @swagger
+ * /patients:
+ *   delete:
+ *     summary: Desactivar paciente (soft delete)
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: idNumber
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Paciente desactivado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Patient'
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.delete("/patients", async (req, res) => {
     if (!req.query.fullName && !req.query.idNumber) {
         return res.status(400).send({
@@ -221,6 +393,30 @@ patientRouter.delete("/patients", async (req, res) => {
     } 
 });
 
+/**
+ * A la hora de borrar pacientes, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
+ * De esta menera se preserva la integridad de los registros.
+ */
+
+/**
+ * @swagger
+ * /patients/{id}:
+ *   delete:
+ *     summary: Desactivar paciente por ID
+ *     tags:
+ *       - Patients
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Paciente desactivado
+ *       404:
+ *         description: No encontrado
+ */
 patientRouter.delete("/patients/:id", async (req, res) => {
     
     try{

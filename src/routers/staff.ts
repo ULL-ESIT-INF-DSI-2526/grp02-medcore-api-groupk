@@ -4,6 +4,39 @@ import { Staff } from '../models/staff.js';
 
 export const staffRouter = express.Router();
 
+/**
+ * @swagger
+ * /staff:
+ *   post:
+ *     summary: Crear o reactivar personal médico
+ *     tags:
+ *       - Staff
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StaffCreate'
+ *     responses:
+ *       201:
+ *         description: Personal médico creado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       200:
+ *         description: Personal médico reactivado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       409:
+ *         description: Ya existe el personal médico
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 staffRouter.post("/staff", async (req, res) => {
 
     try {
@@ -38,6 +71,36 @@ staffRouter.post("/staff", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /staff:
+ *   get:
+ *     summary: Buscar personal médico por nombre o especialidad
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: specialty
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de personal médico
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Staff'
+ *       400:
+ *         description: Faltan parámetros
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.get("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
         return res.status(400).send({
@@ -65,6 +128,29 @@ staffRouter.get("/staff", async (req, res) => {
     } 
 });
 
+/**
+ * @swagger
+ * /staff/{id}:
+ *   get:
+ *     summary: Obtener personal médico por ID
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Personal médico encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.get("/staff/:id", async (req, res) => {
     try {
         const staff = await Staff.findById(req.params.id);
@@ -79,6 +165,40 @@ staffRouter.get("/staff/:id", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /staff:
+ *   patch:
+ *     summary: Actualizar personal médico por filtros
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: specialty
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StaffUpdate'
+ *     responses:
+ *       200:
+ *         description: Personal médico actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       400:
+ *         description: Actualización no permitida
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.patch("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
         return res.status(400).send({
@@ -136,6 +256,31 @@ staffRouter.patch("/staff", async (req, res) => {
 
 });
 
+/**
+ * @swagger
+ * /staff/{id}:
+ *   patch:
+ *     summary: Actualizar personal médico por ID
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/StaffUpdate'
+ *     responses:
+ *       200:
+ *         description: Personal médico actualizado
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.patch("/staff/:id", async (req, res) => {
     
     const allowedUpdates = [
@@ -186,6 +331,33 @@ staffRouter.patch("/staff/:id", async (req, res) => {
  * A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
  * De esta menera se preserva la integridad de los registros.
  */
+
+/**
+ * @swagger
+ * /staff:
+ *   delete:
+ *     summary: Desactivar personal médico
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: query
+ *         name: fullName
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: specialty
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Personal médico desactivado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Staff'
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.delete("/staff", async (req, res) => {
     if (!req.query.fullName && !req.query.specialty) {
         return res.status(400).send({
@@ -223,6 +395,30 @@ staffRouter.delete("/staff", async (req, res) => {
     } 
 });
 
+/**
+ * A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
+ * De esta menera se preserva la integridad de los registros.
+ */
+
+/**
+ * @swagger
+ * /staff/{id}:
+ *   delete:
+ *     summary: Desactivar personal médico por ID
+ *     tags:
+ *       - Staff
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Personal médico desactivado
+ *       404:
+ *         description: No encontrado
+ */
 staffRouter.delete("/staff/:id", async (req, res) => {
     
     try{

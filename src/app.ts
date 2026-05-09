@@ -6,6 +6,10 @@ import { staffRouter } from "./routers/staff.js";
 import { medicationRouter } from "./routers/medications.js";
 import { recordsRouter } from "./routers/records.js";
 
+/**
+ * Configuración principal de la aplicación Express.
+ * Registra la conexión a la base de datos y todos los routers de la API.
+ */
 export const app = express();
 app.use(express.json());
 app.use(patientRouter);
