@@ -30,6 +30,19 @@ sudo /home/usuario/mongodb/bin/mongod --dbpath /home/usuario/mongodb-data/
         
         De esta forma ya tendrás la aplicación ejecutando y puedes trabajar con Postman para mandarle solicitudes.
 
+## ***Test:***
+
+Si se quiere ejecutar los test hay dos métodos, uno para ejecutar vitest solamente y otro para coveralls:
+
+```
+npm run test
+```
+```
+npm run coverage
+```
+
+
+
 [![CI Tests](https://github.com/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk/actions/workflows/ci.yml/badge.svg)](https://github.com/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk/actions/workflows/ci.yml)
 
 [![Coverage Status](https://coveralls.io/repos/github/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk/badge.svg?branch=main)](https://coveralls.io/github/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk?branch=main)
