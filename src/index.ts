@@ -1,23 +1,4 @@
-import express from 'express';
-import './db/mongoose.js';
-import { defaultRouter } from './routers/default.js';
-import { patientRouter } from './routers/patient.js';
-import { staffRouter } from './routers/staff.js';
-import { medicationRouter } from './routers/medications.js';
-import { recordsRouter } from "./routers/records.js";
-
-/**
- * Punto de entrada del servidor Express.
- * Inicializa la aplicación, conecta la base de datos, registra los routers
- * y levanta el servidor en el puerto configurado.
- */
-const app = express();
-app.use(express.json());
-app.use(patientRouter);
-app.use(staffRouter);
-app.use(medicationRouter);
-app.use(recordsRouter);
-app.use(defaultRouter);
+import { app } from "./app.js";
 
 const port = process.env.PORT || 3000;
 

@@ -5,6 +5,7 @@ import { patientRouter } from "./routers/patient.js";
 import { staffRouter } from "./routers/staff.js";
 import { medicationRouter } from "./routers/medications.js";
 import { recordsRouter } from "./routers/records.js";
+
 import { swaggerSpec } from "./config/swagger.js";
 import swaggerUi from "swagger-ui-express"
 
@@ -14,9 +15,9 @@ import swaggerUi from "swagger-ui-express"
  */
 export const app = express();
 app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(patientRouter);
 app.use(staffRouter);
 app.use(medicationRouter);
 app.use(recordsRouter);
 app.use(defaultRouter);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
