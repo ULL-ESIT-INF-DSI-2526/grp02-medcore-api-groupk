@@ -27,8 +27,5 @@ sudo /home/usuario/mongodb/bin/mongod --dbpath /home/usuario/mongodb-data/
         ```
         npm run dev
         ```
-        * Una vez ejecutado lo anterior se pone:
-        ```
-        npm run start
-        ```
+        
         De esta forma ya tendrás la aplicación ejecutando y puedes trabajar con Postman para mandarle solicitudes.
