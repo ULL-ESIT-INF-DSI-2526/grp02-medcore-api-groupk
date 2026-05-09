@@ -6,7 +6,6 @@ import { Staff } from '../models/staff.js';
 import { Medication } from '../models/medications.js';
 import { processPrescriptionsAndCalculateCost } from '../aux/processPrescriptionsAndCalculateCost.js';
 import { restoreStock } from '../aux/restoreStock.js';
-import { Types } from 'mongoose';
 
 export const recordsRouter = express.Router();
 
