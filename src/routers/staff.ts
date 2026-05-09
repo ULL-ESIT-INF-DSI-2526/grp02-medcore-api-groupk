@@ -29,12 +29,12 @@ staffRouter.post("/staff", async (req, res) => {
                 });
             }
 
+        // Crea nuevo staff
         const staff = new Staff(req.body);
-
         await staff.save();
         res.status(201).send(staff);
     }catch (error) {
-        return res.status(400).send(error);
+        return res.status(400).send({ error: "Petición mal formada" });
     }
 });
 
@@ -111,7 +111,7 @@ staffRouter.patch("/staff", async (req, res) => {
     const filter: any = {};
 
     if (req.query.fullName) filter.fullName = req.query.fullName.toString();
-    if (req.query.licenseNumber) filter.licenseNumber = req.query.licenseNumber.toString();
+    if (req.query.specialty) filter.specialty = req.query.specialty.toString();
 
     try {
         const staff = await Staff.findOneAndUpdate(
@@ -196,7 +196,7 @@ staffRouter.delete("/staff", async (req, res) => {
     const filter: any = {};
 
     if (req.query.fullName) filter.fullName = req.query.fullName.toString();
-    if (req.query.licenseNumber) filter.licenseNumber = req.query.licenseNumber.toString();
+    if (req.query.specialty) filter.specialty = req.query.specialty.toString();
 
     try {
         const staff = await Staff.findOneAndUpdate(

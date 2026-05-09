@@ -4,52 +4,11 @@ import { Record } from '../models/records.js';
 import { Patient } from '../models/patient.js';
 import { Staff } from '../models/staff.js';
 import { Medication } from '../models/medications.js';
+import { processPrescriptionsAndCalculateCost } from '../aux/processPrescriptionsAndCalculateCost.js';
+import { restoreStock } from '../aux/restoreStock.js';
+import { Types } from 'mongoose';
 
 export const recordsRouter = express.Router();
-
-/**
- * Función auxiliar: Procesa la lista de recetas, verifica stocks y caducidades,
- * calcula el coste total y descuenta el stock de la base de datos.
- */
-async function processPrescriptionsAndCalculateCost(prescriptionsInput: any[]): Promise<{ totalCost: number; processedPrescriptions: any[] }> {
-    let totalCost = 0;
-    const processedPrescriptions: any[] = [];
-
-    // Verificar que todos los medicamentos existen, tienen stock y no están caducados
-    for (const item of prescriptionsInput) {
-        const medication = await Medication.findOne({ nationalCode: item.nationalCode });
-        
-        if (!medication) {
-            throw new Error(`Medicamento con código nacional ${item.nationalCode} no encontrado.`);
-        }
-
-        if (medication.stock < item.quantity) {
-            throw new Error(`Stock insuficiente para ${medication.comercialName}. Quedan ${medication.stock} unidades.`);
-        }
-
-        if (new Date(medication.caducityDate) < new Date()) {
-            throw new Error(`El medicamento ${medication.comercialName} está caducado y no puede ser prescrito.`);
-        }
-
-        totalCost += medication.price * item.quantity;
-        processedPrescriptions.push({
-            medication: medication._id, // Transformamos el código nacional en el ObjectId real
-            quantity: item.quantity,
-            instructions: item.instructions
-        });
-    }
-
-    // Solo si TODOS son válidos, descontamos el stock
-    for (const item of prescriptionsInput) {
-        await Medication.findOneAndUpdate(
-            { nationalCode: item.nationalCode },
-            { $inc: { stock: -item.quantity } } // Resta la cantidad al stock actual
-        );
-    }
-
-    return { totalCost, processedPrescriptions };
-}
-
 
 recordsRouter.post("/records", async (req, res) => {
     try {
@@ -112,35 +71,40 @@ recordsRouter.post("/records", async (req, res) => {
     }
 });
 
-/**
- * Función auxiliar: Restaura el stock de los medicamentos de un registro.
- * Útil cuando se modifica la receta o se borra/cancela un registro.
- */
-async function restoreStock(prescriptions: any[]) {
-    for (const item of prescriptions) {
-        await Medication.findByIdAndUpdate(
-            item.medication, // Aquí es el ObjectId, no el código nacional
-            { $inc: { stock: item.quantity } } // Sumamos la cantidad de vuelta
-        );
+// Leer por Query String (DNI del paciente )
+recordsRouter.get("/records", async (req, res, next) => {
+    
+    // Si no viene patientIdNumber, pasar al siguiente GET
+    if (!req.query.patientIdNumber) {
+        return next();
     }
-}
 
-
-// Leer por Query String (DNI del paciente o Rango de Fechas)
-recordsRouter.get("/records", async (req, res) => {
     try {
-        // Opción A: Búsqueda por número de identificación del paciente
-        if (req.query.patientIdNumber) {
-            const patientIdNumber = String(req.query.patientIdNumber);
-            const patient = await Patient.findOne({ idNumber: patientIdNumber });
-            if (!patient) {
-                return res.status(404).send({ error: "Paciente no encontrado." });
-            }
-            // Devolver ordenados cronológicamente (1 = más antiguo primero, -1 = más reciente primero)
-            const records = await Record.find({ patient: patient._id }).sort({ startDate: -1 });
-            return res.status(200).send(records);
+
+        const patient = await Patient.findOne({
+            idNumber: req.query.patientIdNumber.toString()
+        });
+
+        if (!patient) {
+            return res.status(404).send({
+                error: "Paciente no encontrado."
+            });
         }
 
+        const records = await Record.find({
+            patient: patient._id
+        } as any).sort({ startDate: -1 });
+
+        return res.status(200).send(records);
+
+    } catch (error) {
+        return res.status(500).send({ error: "Error interno del servidor", details: error });
+    }
+});
+
+// Leer por Query String (Rango de Fechas)
+recordsRouter.get("/records", async (req, res) => {
+    try {
         // Opción B: Búsqueda por rango de fechas
         if (req.query.startDate && req.query.endDate) {
             const filter: any = {
@@ -160,7 +124,7 @@ recordsRouter.get("/records", async (req, res) => {
         }
 
         return res.status(400).json({
-            error: "Debe proporcionar patientIdNumber o un rango de fechas (startDate y endDate)."
+            error: "Debe proporcionar un rango de fechas (startDate y endDate)."
         });
 
     } catch (error) {

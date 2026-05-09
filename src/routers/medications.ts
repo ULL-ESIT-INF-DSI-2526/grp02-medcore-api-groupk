@@ -13,7 +13,7 @@ medicationRouter.post("/medications", async (req, res) => {
         await medication.save();
         res.status(201).send(medication);
     }catch (error) {
-        return res.status(400).send(error);
+        return res.status(400).send({ error: "Petición mal formada" });
     }
 });
 

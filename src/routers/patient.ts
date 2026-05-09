@@ -6,14 +6,38 @@ import { Patient } from '../models/patient.js';
 export const patientRouter = express.Router();
 
 patientRouter.post("/patients", async (req, res) => {
-    const patient = new Patient(req.body);
 
     try {
+
+        // Buscar paciente existente por DNI
+        const existingPatient = await Patient.findOne({
+            idNumber: req.body.idNumber
+        });
+
+        // Si existe y está inactivo → reactivar
+        if (existingPatient && existingPatient.status === "inactivo") {
+
+            existingPatient.status = "activo";
+
+            await existingPatient.save();
+
+            return res.status(200).send(existingPatient);
+        }
+
+        // Si existe y NO está inactivo → error
+        if (existingPatient) {
+            return res.status(409).send({
+                error: "El paciente ya existe"
+            });
+        }
+
+        // Crea nuevo paciente
+        const patient = new Patient(req.body);
         await patient.save();
         res.status(201).send(patient);
     }catch (error) {
-        return res.status(400).send(error);
-    }
+        return res.status(400).send({ error: "Petición mal formada" });
+    } 
 });
 
 patientRouter.get("/patients", async (req, res) => {
@@ -68,7 +92,9 @@ patientRouter.patch("/patients", async (req, res) => {
         "fullName",
         "birthDate",
         "gender",
-        "contact",
+        "contactData.address",
+        "contactData.phoneNumber",
+        "contactData.email",
         "allergies",
         "bloodType",
         "status"
@@ -116,7 +142,9 @@ patientRouter.patch("/patients/:id", async (req, res) => {
         "fullName",
         "birthDate",
         "gender",
-        "contact",
+        "contactData.address",
+        "contactData.phoneNumber",
+        "contactData.email",
         "allergies",
         "bloodType",
         "status"
@@ -169,10 +197,10 @@ patientRouter.delete("/patients", async (req, res) => {
     if (req.query.idNumber) filter.idNumber = req.query.idNumber.toString();
 
     try {
-        const patient = await Patient.findByIdAndUpdate(
+        const patient = await Patient.findOneAndUpdate(
         filter,
         {
-            status: "inactive"
+            status: "inactivo"
         },
         {
             returnDocument: "after",
@@ -199,7 +227,7 @@ patientRouter.delete("/patients/:id", async (req, res) => {
         const patient = await Patient.findByIdAndUpdate(
         req.params.id,
         {
-            status: "inactive"
+            status: "inactivo"
         },
         {
             returnDocument: "after",
