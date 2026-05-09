@@ -1,10 +1,17 @@
 # ***Segundo trabajo en grupo: Medcore Api***
 
-## Miembros del gupo:
+## ***Miembros del gupo***:
 
 Gonzalo Barroso González - alu0101137094
 
 Pablo González Martín - alu0101421179
+
+## ***Api desplegada en Render***:
+
+El enlace a la api desplegada en Render es el siguiente => [Medcore API](https://medcore-api-groupk.onrender.com/api-docs/).
+
+Desde ahí se pueden ver todos los endpoints así como ejemplos de cada uno y sus códigos de error.
+
 
 ## ***Modo de ejecución del proyecto en local:***
 
