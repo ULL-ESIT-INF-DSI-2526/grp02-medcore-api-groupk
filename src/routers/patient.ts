@@ -468,7 +468,7 @@ patientRouter.delete("/patients", async (req, res) => {
  * @swagger
  * /patients/{id}:
  *   delete:
- *     summary: Desactivar paciente por ID.
+ *     summary: Desactivar paciente por ID (soft delete).
  *              A la hora de borrar pacientes, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
  *              De esta menera se preserva la integridad de los registros.
  *     tags:

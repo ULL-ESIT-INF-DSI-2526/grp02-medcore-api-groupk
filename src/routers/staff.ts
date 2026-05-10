@@ -476,7 +476,7 @@ staffRouter.delete("/staff", async (req, res) => {
  * @swagger
  * /staff/{id}:
  *   delete:
- *     summary: Desactivar personal médico por ID.
+ *     summary: Desactivar personal médico por ID (soft delete).
  *              A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
  *              De esta menera se preserva la integridad de los registros.
  *     tags:
