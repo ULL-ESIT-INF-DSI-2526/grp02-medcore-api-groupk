@@ -392,15 +392,12 @@ staffRouter.patch("/staff/:id", async (req, res) => {
 });
 
 /**
- * A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
- * De esta menera se preserva la integridad de los registros.
- */
-
-/**
  * @swagger
  * /staff:
  *   delete:
- *     summary: Desactivar personal médico
+ *     summary: Desactivar personal médico (soft delete).
+ *              A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
+ *              De esta menera se preserva la integridad de los registros.
  *     tags:
  *       - Staff
  *     parameters:
@@ -476,15 +473,12 @@ staffRouter.delete("/staff", async (req, res) => {
 });
 
 /**
- * A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
- * De esta menera se preserva la integridad de los registros.
- */
-
-/**
  * @swagger
  * /staff/{id}:
  *   delete:
- *     summary: Desactivar personal médico por ID
+ *     summary: Desactivar personal médico por ID.
+ *              A la hora de borrar personal médico, no se va a borrar del sistema porque los registros se quedarían con _id que no existirían. 
+ *              De esta menera se preserva la integridad de los registros.
  *     tags:
  *       - Staff
  *     parameters:

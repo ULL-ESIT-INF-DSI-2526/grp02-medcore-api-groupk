@@ -369,15 +369,12 @@ medicationRouter.patch("/medications/:id", async (req, res) => {
 });
 
 /**
- * Para controlar el borrado con los registros en este caso lo que se hace es comprobar que el medicamento a aborrar no esté en ningún registro.
- * Si pertenece a alguno se bloquea el borrado.
- */
-
-/**
  * @swagger
  * /medications:
  *   delete:
- *     summary: Eliminar medicamento por filtros
+ *     summary: Eliminar medicamento por filtros.
+ *              Para controlar el borrado con los registros en este caso lo que se hace es comprobar que el medicamento a aborrar no esté en ningún registro.
+ *              Si pertenece a alguno se bloquea el borrado.
  *     tags:
  *       - Medications
  *     parameters:
@@ -469,7 +466,9 @@ medicationRouter.delete("/medications", async (req, res) => {
  * @swagger
  * /medications/{id}:
  *   delete:
- *     summary: Eliminar medicamento por ID
+ *     summary: Eliminar medicamento por ID.
+ *              Para controlar el borrado con los registros en este caso lo que se hace es comprobar que el medicamento a aborrar no esté en ningún registro.
+ *              Si pertenece a alguno se bloquea el borrado.
  *     tags:
  *       - Medications
  *     parameters:

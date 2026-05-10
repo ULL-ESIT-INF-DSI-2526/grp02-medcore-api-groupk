@@ -85,9 +85,13 @@ beforeEach(async () => {
             quantity: 2,
             instructions: "1 cada 8 horas"
         }],
-        totalMedicationCost: 6, 
+        totalMedicationCost: 6,
         status: "abierto"
     }).save();
+
+    // Simular descuento de stock que haría POST /records
+    defaultMedication.stock -= 2;
+    await defaultMedication.save();
 
     vi.restoreAllMocks();
 });
@@ -115,13 +119,63 @@ describe("POST /records", () => {
 
         // Verificamos que el stock del medicamento bajó (50 inicial - 5 recetados = 45)
         const medUpdated = await Medication.findOne({ nationalCode: "NC555" });
-        expect(medUpdated?.stock).toBe(45);
+        expect(medUpdated?.stock).toBe(43);
+    });
+
+    test("Crea registro sin prescripciones (no entra en el if)", async () => {
+        const response = await request(app)
+            .post("/records")
+            .send({
+                patientIdNumber: "12345678A",
+                staffLicenseNumber: "MED999",
+                recordType: "consulta ambulatoria",
+                reason: "Control",
+                diagnosis: "OK",
+                prescriptionsInput: []
+            })
+            .expect(201);
+
+        expect(response.body.totalMedicationCost).toBe(0);
+        expect(response.body.prescriptions.length).toBe(0);
     });
 
     test("Devuelve 404 si el paciente no existe", async () => {
         await request(app)
             .post("/records")
             .send({ ...validRecordPayload, patientIdNumber: "INVENTADO" })
+            .expect(404);
+    });
+
+    test("Devuelve 404 si el paciente no existe", async () => {
+        vi.spyOn(Patient, "findOne").mockResolvedValueOnce(null as any);
+
+        await request(app)
+            .post("/records")
+            .send({
+                patientIdNumber: "INVENTADO",
+                staffLicenseNumber: "MED999",
+                recordType: "consulta ambulatoria",
+                reason: "Fiebre",
+                diagnosis: "Gripe",
+                prescriptionsInput: []
+            })
+            .expect(404);
+    });
+
+    test("Devuelve 404 si el personal médico no existe", async () => {
+        vi.spyOn(Patient, "findOne").mockResolvedValueOnce(defaultPatient);
+        vi.spyOn(Staff, "findOne").mockResolvedValueOnce(null as any);
+
+        await request(app)
+            .post("/records")
+            .send({
+                patientIdNumber: "12345678A",
+                staffLicenseNumber: "INEXISTENTE",
+                recordType: "consulta ambulatoria",
+                reason: "Fiebre",
+                diagnosis: "Gripe",
+                prescriptionsInput: []
+            })
             .expect(404);
     });
 
@@ -154,12 +208,30 @@ describe("POST /records", () => {
             .send(validRecordPayload)
             .expect(409);
     });
+
+    test("Devuelve 500 si ocurre un error interno", async () => {
+        vi.spyOn(Patient, "findOne").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .post("/records")
+            .send({
+                patientIdNumber: "12345678A",
+                staffLicenseNumber: "MED999",
+                recordType: "consulta ambulatoria",
+                reason: "Fiebre",
+                diagnosis: "Gripe",
+                prescriptionsInput: []
+            })
+            .expect(500);
+    });
 });
 
-describe("GET /records", () => {
+describe("GET /records por IdNumber y rango de fechas", () => {
     test("Busca registros por patientIdNumber", async () => {
         const response = await request(app)
-            .get("/records?patientIdNumber=12345678A")
+            .get("/records/patient/12345678A")
             .expect(200);
 
         expect(response.body.length).toBe(1);
@@ -182,8 +254,38 @@ describe("GET /records", () => {
 
     test("Devuelve 404 si el paciente no existe en búsqueda por DNI", async () => {
         await request(app)
-            .get("/records?patientIdNumber=NO_EXISTE")
+            .get("/records/patient/NO_EXISTE")
             .expect(404);
+    });
+
+    test("Devuelve 500 si ocurre un error interno", async () => {
+        vi.spyOn(Record, "find").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .get("/records?startDate=2024-01-01&endDate=2024-12-31")
+            .expect(500);
+    });
+
+    test("Devuelve 500 si ocurre un error interno (con recordType opcional)", async () => {
+        vi.spyOn(Record, "find").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .get("/records?startDate=2024-01-01&endDate=2024-12-31&recordType=consulta%20ambulatoria")
+            .expect(500);
+    });
+
+    test("Devuelve 500 si ocurre un error interno", async () => {
+        vi.spyOn(Patient, "findOne").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .get("/records/patient/12345678A")
+            .expect(500);
     });
 });
 
@@ -202,6 +304,16 @@ describe("GET /records/:id", () => {
         await request(app)
             .get("/records/000000000000000000000000")
             .expect(404);
+    });
+
+    test("Devuelve 500 si ocurre un error interno", async () => {
+        vi.spyOn(Record, "findById").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .get(`/records/${defaultRecord._id}`)
+            .expect(500);
     });
 });
 
@@ -235,6 +347,15 @@ describe("PATCH /records/:id", () => {
         expect(medUpdated?.stock).toBe(40);
     });
 
+    test("Devuelve 404 si el registro no existe", async () => {
+        await request(app)
+            .patch("/records/000000000000000000000000")
+            .send({
+                status: "cerrado"
+            })
+            .expect(404);
+    });
+
     test("Devuelve 409 si la nueva receta excede el stock", async () => {
         await request(app)
             .patch(`/records/${defaultRecord._id}`)
@@ -244,6 +365,19 @@ describe("PATCH /records/:id", () => {
                 ]
             })
             .expect(409);
+    });
+
+    test("Devuelve 500 si ocurre un error interno", async () => {
+        vi.spyOn(Record, "findById").mockImplementationOnce(() => {
+            throw new Error("Error interno");
+        });
+
+        await request(app)
+            .patch(`/records/${defaultRecord._id}`)
+            .send({
+                status: "cerrado"
+            })
+            .expect(500);
     });
 });
 
