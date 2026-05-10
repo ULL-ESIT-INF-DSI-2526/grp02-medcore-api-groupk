@@ -47,7 +47,7 @@ npm run test
 ```
 npm run coverage
 ```
-
+> **Nota:** Para ejecutar los test también hay que iniciar el servidor de MongoDB.
 
 
 [![CI Tests](https://github.com/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk/actions/workflows/ci.yml/badge.svg)](https://github.com/ULL-ESIT-INF-DSI-2526/grp02-medcore-api-groupk/actions/workflows/ci.yml)
